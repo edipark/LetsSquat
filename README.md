@@ -13,7 +13,7 @@ This project calculates and visualizes the torque required at the knee and hip j
 - Parallel Computing Toolbox (for `parfor` acceleration)
 
 ## How to Run
-1. Run `Sim1.m` in MATLAB.
+1. Run `ItsLegday.m` in MATLAB.
 2. Enter the subject's body parameters in the dialog box.
 3. The simulation will calculate the mechanics and display the results.
 4. A heatmap will be generated showing the torque distribution.
