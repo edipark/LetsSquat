@@ -1,25 +1,107 @@
-# Squat Biomechanics Simulation (MATLAB)
+# 🏋️‍♂️ 2D Squat Simulator
 
-Biomechanics simulation tool for analyzing joint torques during Squat exercises.
-This project calculates and visualizes the torque required at the knee and hip joints based on body dimensions and squat depth using inverse dynamics.
+A MATLAB-based biomechanics simulation tool designed to analyze the kinematics and kinetics of Squat exercises. This project models the human lower body as a rigid-body 2D- manipulator to calculate joint torques, visualize movement trajectories, and generate torque distribution heatmaps using parallel computing.
 
-## Features
-- **User Interface:** GUI for inputting body parameters (Femur, Tibia, Torso length, Mass, etc.).
-- **Parallel Computing:** utilizes `parfor` to accelerate heatmap generation.
-- **Visualization:** Generates torque heatmaps for Knee and Hip joints relative to limb angles.
+![MATLAB](https://img.shields.io/badge/MATLAB-R2020a%2B-orange) ![License](https://img.shields.io/badge/License-MIT-blue)
 
-## Requirements
-- MATLAB R2020a or later
-- Parallel Computing Toolbox (for `parfor` acceleration)
+## 📌 Features
 
-## How to Run
-1. Run `ItsLegday.m` in MATLAB.
-2. Enter the subject's body parameters in the dialog box.
-3. The simulation will calculate the mechanics and display the results.
-4. A heatmap will be generated showing the torque distribution.
+* **Rigid Body Modeling:** Utilizes MATLAB's **Robotics System Toolbox** to create a 3-DOF kinematic chain representing the Foot, Tibia, Femur, and Torso.
+* **Inverse Kinematics & Dynamics:** Solves for joint angles and torques required to maintain the barbell's center of mass directly over the mid-foot (Center of Pressure constraint).
+* **Interactive GUI:** Input dialogs for customizing body dimensions (Femur, Tibia, Torso length), body mass, squat type (High-bar vs. Low-bar), and barbell weight.
+* **Torque Heatmap Visualization:** Generates detailed heatmaps showing the integral of torque at the Knee and Hip across a range of motion.
+    * **Parallel Computing:** Implements `parfor` and `DataQueue` with a custom UI progress bar to accelerate the heavy calculation of heatmaps.
+* **Video Export:** Automatically generates `.mp4` animations of the squat movement.
 
-## Files
-- `Sim1.m`: Main entry point (GUI setup).
-- `squat_simulation.m`: Core dynamics solver.
-- `plotLocalTorqueHeatmapUI.m`: Heatmap visualization with parallel processing.
-- `TorqueAnalysis.m`: Inverse dynamics calculation unit.
+## 🛠 Prerequisites
+
+To run this project, you need **MATLAB** (R2020a or later recommended) with the following toolboxes:
+
+* **Robotics System Toolbox** (Required for `rigidBodyTree` and `generalizedInverseKinematics`)
+* **Parallel Computing Toolbox** (Required for accelerated heatmap generation)
+
+## 🚀 How to Run
+
+### Main Simulation
+Run the master script to start the full simulation sequence:
+```matlab
+ItsLegDay
+```
+This script executes the following steps in order:
+
+Input Setup (Sim1): A dialog appears for body parameters (Lengths, Mass, Load).
+
+Standard Simulation: Performs a squat simulation based on the inputs and reports Peak Torque & ROM.
+
+Heatmap Generation: Calculates knee/hip torque integrals.
+
+Note: This starts a Parallel Pool. It may take 30-60 seconds to initialize.
+
+A progress bar will show the calculation status.
+
+Trajectory Refinement (Sim2): After the first pass, Sim2 runs to allow you to test specific final joint angles.
+
+
+# 📂 File Structure
+File Name	Description
+
+` ItsLegDay.m `	: Master Wrapper. The main entry point that orchestrates Sim1 (setup) and Sim2 (trajectory).
+
+` Sim1.m ` : Initial Setup GUI. Handles parameter inputs, runs the base simulation, and triggers heatmap generation.
+
+` Sim2.m ` :	Secondary GUI. Allows users to specify target angles for the Femur and Tibia to analyze different squat depths.
+
+` squat_simulation.m` : 	Core Solver. Handles trajectory generation, Generalized Inverse Kinematics (GIK), Inverse Dynamics, and video recording.
+
+` squat_robot.m` : 	Defines the kinematic structure (Rigid Body Tree) and mass properties of the human model.
+
+` solveBarY_fixedTrunkFromFinal.m` : 	Geometric solver ensuring the "Bar over Mid-foot" constraint is satisfied for any given depth.
+
+` plotLocalTorqueHeatmapUI.m` : 	Key Feature. Generates torque heatmaps using Parallel Computing with a custom progress bar UI.
+
+` TorqueAnalysis.m` : 	Headless function for calculating physics in the background (used by the heatmap generator).
+
+
+# 📊 Biomechanical Constraints
+The simulation is based on the Static Equilibrium assumption:
+
+Center of Pressure (CoP): The projection of the system's Center of Mass (or Barbell) stays vertically aligned with the mid-foot (x=Foot/6).
+
+Bar Positioning (l):
+
+High-bar Squat: Barbell is placed higher on the torso (l≈0.7084).
+
+Low-bar Squat: Barbell is placed lower on the torso (l≈0.6429), typically forcing a more forward-leaning trunk angle.
+
+# 📄 License
+This project is licensed under the MIT License - see the text below for details.
+
+Plaintext
+
+MIT License
+
+Copyright (c) 2024 [SunghyunPark]
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+📬 Contact
+Author: [SunghyunPark]
+
+Email: [edi_park@yonsei.ac.kr]
+
+GitHub: [https://github.com/edipark]
