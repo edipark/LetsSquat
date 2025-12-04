@@ -1,6 +1,6 @@
 # 🏋️‍♂️ 2D Squat Simulator
 
-A MATLAB-based biomechanics simulation tool designed to analyze the kinematics and kinetics of Squat exercises. This project models the human lower body as a rigid-body 2D- manipulator to calculate joint torques, visualize movement trajectories, and generate torque distribution heatmaps using parallel computing.
+A MATLAB-based biomechanics simulation tool designed to analyze the kinematics and kinetics of Squat exercises. This project models the human lower body as a rigid-body 2D-manipulator to calculate joint torques, visualize movement trajectories, and generate torque distribution heatmaps using parallel computing.
 
 ![MATLAB](https://img.shields.io/badge/MATLAB-R2020a%2B-orange) ![License](https://img.shields.io/badge/License-MIT-blue)
 
@@ -10,7 +10,7 @@ A MATLAB-based biomechanics simulation tool designed to analyze the kinematics a
 * **Inverse Kinematics & Dynamics:** Solves for joint angles and torques required to maintain the barbell's center of mass directly over the mid-foot (Center of Pressure constraint).
 * **Interactive GUI:** Input dialogs for customizing body dimensions (Femur, Tibia, Torso length), body mass, squat type (High-bar vs. Low-bar), and barbell weight.
 * **Torque Heatmap Visualization:** Generates detailed heatmaps showing the integral of torque at the Knee and Hip across a range of motion.
-    * **Parallel Computing:** Implements `parfor` and `DataQueue` with a custom UI progress bar to accelerate the heavy calculation of heatmaps.
+    * **🚀 Parallel Computing:** Implements `parfor` and `DataQueue` with a custom UI progress bar to accelerate the heavy calculation of heatmaps.
 * **Video Export:** Automatically generates `.mp4` animations of the squat movement.
 
 ## 🛠 Prerequisites
@@ -24,63 +24,49 @@ To run this project, you need **MATLAB** (R2020a or later recommended) with the 
 
 ### Main Simulation
 Run the master script to start the full simulation sequence:
+
 ```matlab
 ItsLegDay
 ```
+
 This script executes the following steps in order:
 
-Input Setup (Sim1): A dialog appears for body parameters (Lengths, Mass, Load).
+1.  **Input Setup (`Sim1`):** A dialog appears for body parameters (Lengths, Mass, Load).
+2.  **Standard Simulation:** Performs a squat simulation based on the inputs and reports Peak Torque & ROM.
+3.  **Heatmap Generation:** Calculates knee/hip torque integrals.
+    > **Note:** This starts a Parallel Pool. It may take **30-60 seconds** to initialize. A progress bar will show the calculation status.
+4.  **Trajectory Refinement (`Sim2`):** After the first pass, `Sim2` runs to allow you to test specific final joint angles.
 
-Standard Simulation: Performs a squat simulation based on the inputs and reports Peak Torque & ROM.
+## 📂 File Structure
 
-Heatmap Generation: Calculates knee/hip torque integrals.
+| File Name | Description |
+| :--- | :--- |
+| **`ItsLegDay.m`** | **Master Wrapper.** The main entry point that orchestrates `Sim1` (setup) and `Sim2` (trajectory). |
+| **`Sim1.m`** | Initial Setup GUI. Handles parameter inputs, runs the base simulation, and triggers heatmap generation. |
+| **`Sim2.m`** | Secondary GUI. Allows users to specify target angles for the Femur and Tibia to analyze different squat depths. |
+| **`squat_simulation.m`** | **Core Solver.** Handles trajectory generation, Generalized Inverse Kinematics (GIK), Inverse Dynamics, and video recording. |
+| **`squat_robot.m`** | Defines the kinematic structure (Rigid Body Tree) and mass properties of the human model. |
+| **`solveBarY_fixedTrunkFromFinal.m`** | Geometric solver ensuring the "Bar over Mid-foot" constraint is satisfied for any given depth. |
+| **`plotLocalTorqueHeatmapUI.m`** | **Key Feature.** Generates torque heatmaps using **Parallel Computing** with a custom progress bar UI. |
+| **`TorqueAnalysis.m`** | Headless function for calculating physics in the background (used by the heatmap generator). |
 
-Note: This starts a Parallel Pool. It may take 30-60 seconds to initialize.
+## 📊 Biomechanical Constraints
 
-A progress bar will show the calculation status.
+The simulation is based on the **Static Equilibrium** assumption:
 
-Trajectory Refinement (Sim2): After the first pass, Sim2 runs to allow you to test specific final joint angles.
+1.  **Center of Pressure (CoP):** The projection of the system's Center of Mass (or Barbell) stays vertically aligned with the mid-foot ($x = Foot/6$).
+2.  **Bar Positioning ($l$):**
+    * **High-bar Squat:** Barbell is placed higher on the torso ($l \approx 0.7084$).
+    * **Low-bar Squat:** Barbell is placed lower on the torso ($l \approx 0.6429$), typically forcing a more forward-leaning trunk angle.
 
+## 📄 License
 
-# 📂 File Structure
-File Name	Description
-
-` ItsLegDay.m `	: Master Wrapper. The main entry point that orchestrates Sim1 (setup) and Sim2 (trajectory).
-
-` Sim1.m ` : Initial Setup GUI. Handles parameter inputs, runs the base simulation, and triggers heatmap generation.
-
-` Sim2.m ` :	Secondary GUI. Allows users to specify target angles for the Femur and Tibia to analyze different squat depths.
-
-` squat_simulation.m` : 	Core Solver. Handles trajectory generation, Generalized Inverse Kinematics (GIK), Inverse Dynamics, and video recording.
-
-` squat_robot.m` : 	Defines the kinematic structure (Rigid Body Tree) and mass properties of the human model.
-
-` solveBarY_fixedTrunkFromFinal.m` : 	Geometric solver ensuring the "Bar over Mid-foot" constraint is satisfied for any given depth.
-
-` plotLocalTorqueHeatmapUI.m` : 	Key Feature. Generates torque heatmaps using Parallel Computing with a custom progress bar UI.
-
-` TorqueAnalysis.m` : 	Headless function for calculating physics in the background (used by the heatmap generator).
-
-
-# 📊 Biomechanical Constraints
-The simulation is based on the Static Equilibrium assumption:
-
-Center of Pressure (CoP): The projection of the system's Center of Mass (or Barbell) stays vertically aligned with the mid-foot (x=Foot/6).
-
-Bar Positioning (l):
-
-High-bar Squat: Barbell is placed higher on the torso (l≈0.7084).
-
-Low-bar Squat: Barbell is placed lower on the torso (l≈0.6429), typically forcing a more forward-leaning trunk angle.
-
-# 📄 License
 This project is licensed under the MIT License - see the text below for details.
 
-Plaintext
-
+```text
 MIT License
 
-Copyright (c) 2024 [SunghyunPark]
+Copyright (c) 2024 Sunghyun Park
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -99,9 +85,10 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-📬 Contact
-Author: [SunghyunPark]
+```
 
-Email: [edi_park@yonsei.ac.kr]
+## 📬 Contact
 
-GitHub: [https://github.com/edipark]
+* **Author:** Sunghyun Park
+* **Email:** edi_park@yonsei.ac.kr
+* **GitHub:** [https://github.com/edipark](https://github.com/edipark)
