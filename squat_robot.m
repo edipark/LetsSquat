@@ -10,17 +10,6 @@ function robot = squat_robot(config, barbell, type)
 
     robot = rigidBodyTree('DataFormat','column','MaxNumBodies',5);
     robot.Gravity = [0 -9.81 0];
-        
-    % Femur = 0.4703;
-    % Tibia = 0.3691;
-    % Body = 0.9076;
-    % Foot = 0.26;
-    % radius = 1.5*0.02;
-    % Mass = 76.9;
-    % Femur_m = 0.1 * Mass;
-    % Tibia_m = 0.0465 * Mass;
-    % Upper_m = 0.678 * Mass;
-    % config = [0.4703, 0.3691, 0.9076, 0.26, 76.9];
     
     Femur = config(1);
     Tibia = config(2);

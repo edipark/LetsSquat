@@ -4,6 +4,10 @@ A MATLAB-based biomechanics simulation tool designed to analyze the kinematics a
 
 ![MATLAB](https://img.shields.io/badge/MATLAB-R2020a%2B-orange) ![License](https://img.shields.io/badge/License-MIT-blue)
 
+<p align="center">
+  <img src="Squat_demo.gif" alt="Squat Simulation Demo" width="600">
+</p>
+
 ## 📌 Features
 
 * **Rigid Body Modeling:** Utilizes MATLAB's **Robotics System Toolbox** to create a 3-DOF kinematic chain representing the Foot, Tibia, Femur, and Torso.
